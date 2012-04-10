@@ -49,6 +49,18 @@ class SessionTest extends WebTestCase
         $this->assertContains('You are new here and gave no name.', $crawler->text());
     }
 
+    public function testPredefinedSession()
+    {
+        $client = $this->createClient(array('test_case' => 'Session', 'root_config' => 'config.yml'));
+
+        $session = static::$kernel->getContainer()->get('session');
+        $session->set('name', 'foo');
+        $session->save();
+
+        $crawler = $client->request('GET', '/session');
+        $this->assertContains('Hello foo, nice to meet you.', $crawler->text());
+    }
+
     /**
      * Tests flash messages work in practice.
      *
